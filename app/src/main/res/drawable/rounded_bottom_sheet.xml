@@ -1,0 +1,11 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/main_20_per_transparent_background_color" /> <!-- Set your desired background color here -->
+    <corners
+        android:topLeftRadius="17dp"
+        android:topRightRadius="17dp"
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp" /> <!-- Set the desired corner radius here -->
+    <stroke
+        android:width="1dp"
+        android:color="@android:color/white" /> <!-- Set the desired stroke width and color here -->
+</shape>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="main_background_color">#020200</color>
+    <color name="main_20_per_transparent_background_color">#F0020200</color>
+
+    <color name="plplBlue">#FF2196F3</color>
+    <color name="lightGray">#D6D4D4</color>
+    <color name="main_seek_bar_orange">#f05454</color>
+
+
+
+</resources>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/command_center_layout"
+    android:layout_alignParentBottom="true"
+    android:clickable="false"
+    android:focusable="false"
+    android:padding="8dp"
+    android:tag="playerFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.command_center.CommandCenterFragment">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline40"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.01" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline41"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.40" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline43"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <ImageView
+            android:id="@+id/iv_artwork"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/album_artwork"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline41"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline42"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline40"
+            app:layout_constraintVertical_bias="1.0">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline44"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.20" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressTint="@android:color/holo_orange_dark"
+                android:thumbTint="@color/white"
+                app:haloColor="@color/lightGray"
+                app:haloRadius="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline44"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:thumbElevation="2dp"
+                app:thumbRadius="5dp"
+                app:trackColorActive="@color/main_background_color"
+                app:trackColorInactive="@color/lightGray" />
+
+            <ImageButton
+                android:id="@+id/ib_audio_Output"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/change_audio_output"
+                android:src="@drawable/bluetooth"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/lt_btn_previous_song"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline44" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_previous_song"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/lt_btn_30_sec_rewind"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ib_audio_Output"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_rawRes="@raw/rewind" />
+
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_30_sec_rewind"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/guideline49"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/lt_btn_previous_song"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_rawRes="@raw/thirty_sec_back" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline49"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.35" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline50"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.65"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_play"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/lt_btn_10_sec_forward"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/lt_btn_30_sec_rewind"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/command_center_play_pause" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_10_sec_forward"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/lt_btn_next_song"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline50"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/ten_sec_forward" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_next_song"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline47"
+                app:layout_constraintEnd_toStartOf="@+id/lt_bt_shuffle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/lt_btn_10_sec_forward"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_rawRes="@raw/thirty_sec_forward" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_btn_repeat"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline46"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline45"
+                app:layout_constraintTop_toTopOf="@+id/guideline44"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/repeat" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lt_bt_shuffle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline47"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline45"
+                app:layout_constraintTop_toTopOf="@+id/guideline46"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/shuffle" />
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline45"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.90" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline46"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.45" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline47"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.70" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline48"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.50" />
+
+            <TextView
+                android:id="@+id/tv_media_name"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_horizontal|center_vertical"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline48"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline47" />
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical|center_horizontal|end"
+                android:singleLine="true"
+                android:text="@string/duration_default"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline51"
+                app:layout_constraintStart_toStartOf="@+id/guideline48"
+                app:layout_constraintTop_toTopOf="@+id/guideline47" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline51"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.75"/>
+
+            <TextView
+                android:id="@+id/tv_current_progress"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical|center_horizontal|start"
+                android:singleLine="true"
+                android:text="@string/duration_default"
+                android:paddingStart="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_duration"
+                app:layout_constraintTop_toTopOf="@+id/guideline47" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline42"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.25" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

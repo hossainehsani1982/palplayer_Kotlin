@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/mainCategoryFragment">
+    <fragment
+        android:id="@+id/mainCategoryFragment"
+        android:name="com.hossainehs.palplayer.presentation.main_category.MainCategoryFragment"
+        android:label="fragment_main_category"
+        tools:layout="@layout/fragment_main_category" >
+        <action
+            android:id="@+id/action_mainCategoryFragment_to_audioFilesFragment"
+            app:destination="@id/audioFilesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/audioFilesFragment"
+        android:name="com.hossainehs.palplayer.presentation.media_files.MediaFilesFragment"
+        android:label="fragment_audio_files"
+        tools:layout="@layout/fragment_audio_files" >
+        <argument
+            android:name="subCategoryId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_audioFilesFragment_to_systemMediaFilesFragment"
+            app:destination="@id/systemMediaFilesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/systemMediaFilesFragment"
+        android:name="com.hossainehs.palplayer.presentation.system_media_files.SystemMediaFilesFragment"
+        android:label="fragment_system_media_files"
+        tools:layout="@layout/fragment_system_media_files" >
+        <argument
+            android:name="subCategoryId"
+            app:argType="integer" />
+    </fragment>
+</navigation>
