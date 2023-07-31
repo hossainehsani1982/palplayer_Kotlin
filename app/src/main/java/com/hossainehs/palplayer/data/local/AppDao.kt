@@ -1,6 +1,5 @@
 package com.hossainehs.palplayer.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -20,12 +19,12 @@ interface AppDao {
     @Query(
         """
         SELECT * FROM subcategory_table
-        WHERE subCategoryId = :subCategoryId
+        WHERE mainCategoryNumber = :mainCategoryId
         AND mainCategoryName = :mainCategoryName
         """
     )
     fun getSubCategoriesWithMediaFiles(
-        subCategoryId: Int,
+        mainCategoryId: Int,
         mainCategoryName: String
     ): Flow<List<SubCategoryWithMediaFile>>
 
@@ -36,9 +35,9 @@ interface AppDao {
         WHERE subCategoryId = :subCategoryId
         """
     )
-    fun getSubCategoriesWithMediaFiles(
+    suspend fun getSubCategoryWithMediaFiles(
         subCategoryId: Int
-    ): Flow<SubCategoryWithMediaFile>
+    ): SubCategoryWithMediaFile
 
     @Transaction
     @Query(

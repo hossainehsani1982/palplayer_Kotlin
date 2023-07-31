@@ -55,10 +55,10 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
                     )
                 )
                 layoutManager = LinearLayoutManager(requireContext())
-                mainCategoryViewModel.state.subCategoryWithMediaFilesList.observe(
+                mainCategoryViewModel.subCategoryItems.observe(
                     viewLifecycleOwner
                 ) {
-                    mainCategoryAdapter.submitList(it)
+                    mainCategoryAdapter.submitList(it.data)
                 }
             }
 

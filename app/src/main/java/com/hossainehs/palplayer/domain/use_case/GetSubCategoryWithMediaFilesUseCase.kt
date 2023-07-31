@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 class GetSubCategoryWithMediaFilesUseCase(
     private val repository: Repository
 ) {
-     operator fun invoke(
+    suspend operator fun invoke(
         mainCategoryId: Int
-    ): Flow<SubCategoryWithMediaFile> {
+    ): SubCategoryWithMediaFile {
          return  repository.getSubCategoryWithMediaFilesBySubCategoryId(mainCategoryId)
      }
 }

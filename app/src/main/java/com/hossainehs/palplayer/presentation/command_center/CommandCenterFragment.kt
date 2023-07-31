@@ -34,9 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand_center) {
 
-    companion object {
-        var musicService: MusicService? = null
-    }
 
     private val commandCenterViewModel: CommandCenterViewModel by viewModels()
     private lateinit var binding: FragmentComandCenterBinding
@@ -71,44 +68,44 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
 
 
-        mediaFilesViewModel.currentlyPlayingMediaFile?.let {mediaFileLive->
-            mediaFileLive.observe(viewLifecycleOwner){
-                playingMediaFile = it
-            }
-        }
+//        mediaFilesViewModel.currentlyPlayingMediaFile?.let {mediaFileLive->
+//            mediaFileLive.observe(viewLifecycleOwner){
+//                playingMediaFile = it
+//            }
+//        }
 
 
         binding.apply {
-            mediaFilesViewModel.currentPlayingSong.observe(viewLifecycleOwner) {
-                it?.let { mediaMetadata ->
-                    mediaFilesViewModel.onEvent(
-                        MediaFilesViewModelEvents.OnMediaItemCompatChanged(
-                            mediaMetadata
-                        )
-                    )
-                    tvMediaName.text = mediaMetadata.description.title
-                    tvDuration.text = getString(
-                        R.string.duration_text,
-                        formatTime(mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
-                        )
-                    )
-                    progressBar.max = mediaMetadata.getLong(
-                        MediaMetadataCompat.METADATA_KEY_DURATION
-                    ).toInt()
-                }
-            }
-
-            mediaFilesViewModel.isMediaFilePlaying.observe(
-                viewLifecycleOwner
-            ) { isPlaying ->
-               playStatus = isPlaying
-                btnPlayPauseAnimation(isPlaying)
-            }
-
-            mediaFilesViewModel.currentPosition.observe(viewLifecycleOwner) {
-                progressBar.progress = it.toInt()
-                tvCurrentProgress.text = formatTime(it)
-            }
+//            mediaFilesViewModel.currentPlayingSong.observe(viewLifecycleOwner) {
+//                it?.let { mediaMetadata ->
+//                    mediaFilesViewModel.onEvent(
+//                        MediaFilesViewModelEvents.OnMediaItemCompatChanged(
+//                            mediaMetadata
+//                        )
+//                    )
+//                    tvMediaName.text = mediaMetadata.description.title
+//                    tvDuration.text = getString(
+//                        R.string.duration_text,
+//                        formatTime(mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+//                        )
+//                    )
+//                    progressBar.max = mediaMetadata.getLong(
+//                        MediaMetadataCompat.METADATA_KEY_DURATION
+//                    ).toInt()
+//                }
+//            }
+//
+//            mediaFilesViewModel.isMediaFilePlaying.observe(
+//                viewLifecycleOwner
+//            ) { isPlaying ->
+//               playStatus = isPlaying
+//                btnPlayPauseAnimation(isPlaying)
+//            }
+//
+//            mediaFilesViewModel.currentPosition.observe(viewLifecycleOwner) {
+//                progressBar.progress = it.toInt()
+//                tvCurrentProgress.text = formatTime(it)
+//            }
 
 
             progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -123,11 +120,11 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     if (playingMediaFile != null) {
-                        mediaFilesViewModel.onEvent(
-                            MediaFilesViewModelEvents.OnSeekTo(
-                                pb_position.toLong()
-                            )
-                        )
+//                        mediaFilesViewModel.onEvent(
+//                            MediaFilesViewModelEvents.OnSeekTo(
+//                                pb_position.toLong()
+//                            )
+//                        )
                     }
                 }
 
@@ -135,38 +132,38 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
 
             ltBtnPreviousSong.setOnClickListener {
-                    mediaFilesViewModel.onEvent(
-                        MediaFilesViewModelEvents.OnPreviousButtonClicked
-                    )
+//                    mediaFilesViewModel.onEvent(
+//                        MediaFilesViewModelEvents.OnPreviousButtonClicked
+//                    )
 
             }
 
             ltBtn30SecRewind.setOnClickListener {
-               mediaFilesViewModel.onEvent(
-                   MediaFilesViewModelEvents.On30RewindButtonClicked
-               )
+//               mediaFilesViewModel.onEvent(
+//                   MediaFilesViewModelEvents.On30RewindButtonClicked
+//               )
             }
 
             ltBtnPlay.setOnClickListener {
-                mediaFilesViewModel.onEvent(
-                    MediaFilesViewModelEvents.OnPlayPauseButtonClicked(
-                        playingMediaFile!!,
-                        playStatus
-                    )
-                )
+//                mediaFilesViewModel.onEvent(
+//                    MediaFilesViewModelEvents.OnPlayPauseButtonClicked(
+//                        playingMediaFile!!,
+//                        playStatus
+//                    )
+//                )
 
             }
 
             ltBtn10SecForward.setOnClickListener {
-                mediaFilesViewModel.onEvent(
-                    MediaFilesViewModelEvents.On10ForwardButtonClicked
-                )
+//                mediaFilesViewModel.onEvent(
+//                    MediaFilesViewModelEvents.On10ForwardButtonClicked
+//                )
             }
 
             ltBtnNextSong.setOnClickListener {
-                mediaFilesViewModel.onEvent(
-                    MediaFilesViewModelEvents.OnNextButtonClicked
-                )
+//                mediaFilesViewModel.onEvent(
+//                    MediaFilesViewModelEvents.OnNextButtonClicked
+//                )
             }
 
         }
@@ -231,12 +228,12 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
                 }
 
                 CommandCenterEvents.OnPlayClick -> {
-                    mediaFilesViewModel.onEvent(
-                        MediaFilesViewModelEvents.OnPlayPauseButtonClicked(
-                            playingMediaFile!!,
-                            !playStatus
-                        )
-                    )
+//                    mediaFilesViewModel.onEvent(
+//                        MediaFilesViewModelEvents.OnPlayPauseButtonClicked(
+//                            playingMediaFile!!,
+//                            !playStatus
+//                        )
+//                    )
 
                 }
 

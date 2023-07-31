@@ -15,14 +15,14 @@ interface Repository {
     suspend fun insertNewSubCategory(subCategory: SubCategory)
 
     fun getSubCategoriesWithMediaFilesByMainCategoryName(
-        subCategoryId: Int,
+        mainCategoryId: Int,
         mainCategoryName: String
     ): Flow<List<SubCategoryWithMediaFile>>
 
 
-    fun getSubCategoryWithMediaFilesBySubCategoryId(
+   suspend fun getSubCategoryWithMediaFilesBySubCategoryId(
         subCategoryId: Int
-    ): Flow<SubCategoryWithMediaFile>
+    ): SubCategoryWithMediaFile
 
     suspend fun insertNewMediaFile(mediaFile: MediaFile)
 

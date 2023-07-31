@@ -22,6 +22,7 @@ import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.hossainehs.palplayer.data.util.ConstValues.DATABASE_ERROR
 import com.hossainehs.palplayer.data.util.ConstValues.MEDIA_ROOT_ID
+import com.hossainehs.palplayer.data.util.ConstValues.PLAYLIST_ROOT_ID
 import com.hossainehs.palplayer.domain.sharedPreferences.Preferences
 import com.hossainehs.palplayer.domain.use_case.GetMediaFileByUri
 import com.hossainehs.palplayer.service.callbacks.ExoPlayerListener
@@ -91,8 +92,10 @@ class MusicService : MediaBrowserServiceCompat() {
 
         musicSource.fetchMediaData(1)
 
+
         mediaSessionPreparer = MediaPlayBackPreparer(
             musicSource = musicSource,
+            serviceScope = serviceScope
         ) {
             currentPlayingSong = it
 
@@ -142,6 +145,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
         mediaSessionPreparer = MediaPlayBackPreparer(
             musicSource = musicSource,
+            serviceScope = serviceScope
         ) { mediaMetaData ->
             currentSongDuration = mediaMetaData?.getLong(
                 MediaMetadata.METADATA_KEY_DURATION
@@ -162,14 +166,10 @@ class MusicService : MediaBrowserServiceCompat() {
         playNow: Boolean
     ) {
         val curSongIndex = if (currentPlayingSong == null) 0 else songs.indexOf(itemToPlay)
-        serviceScope.launch {
-            musicSource.asMediaSource(datasourceFactory).collect {
-                exoPlayer.prepare(it)
-                exoPlayer.seekTo(curSongIndex, 0L)
-                exoPlayer.playWhenReady = playNow
-            }
-        }
 
+        exoPlayer.prepare(musicSource.asMediaSource(datasourceFactory))
+        exoPlayer.seekTo(curSongIndex, 0L)
+        exoPlayer.playWhenReady = playNow
 
     }
 
@@ -179,7 +179,7 @@ class MusicService : MediaBrowserServiceCompat() {
         rootHints: Bundle?
     ): BrowserRoot? {
         return BrowserRoot(
-            MEDIA_ROOT_ID,
+            PLAYLIST_ROOT_ID,
             null
         )
 
@@ -190,27 +190,43 @@ class MusicService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         when (parentId) {
-            MEDIA_ROOT_ID -> {
-                result.detach()
-                println("connected")
+            PLAYLIST_ROOT_ID ->
+            {
+                println("PLAYLIST_ROOT_ID connected")
                 val resultSent = musicSource.whenReady { isInitialized ->
                     if (isInitialized) {
-                        serviceScope.launch {
-                            musicSource.asMediaItem().collectLatest{
-                                result.sendResult(it)
-                                notifyChildrenChanged(MEDIA_ROOT_ID)
-                            }
+                        val subCategoriesWithMediaFiles = musicSource.subCategoriesAsMediaItem()
+                        result.sendResult(subCategoriesWithMediaFiles)
+                        notifyChildrenChanged(PLAYLIST_ROOT_ID)
+                    }else {
+                        mediaSessionCompat.sendSessionEvent(
+                            DATABASE_ERROR,
+                            null
+                        )
+                        result.sendResult(null)
+                    }
+                }
+                if (!resultSent) {
+                    result.detach()
+                }
+            }
 
+            MEDIA_ROOT_ID -> {
 
-                            if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
-                                preparePlayer(
-                                    musicSource.songs,
-                                    musicSource.songs[0],
-                                    false
-                                )
-                                isPlayerInitialized = true
-                            }
+                println("MEDIA_ROOT_ID connected")
+                val resultSent = musicSource.whenReady { isInitialized ->
+                    if (isInitialized) {
+                        result.sendResult(musicSource.asMediaItem())
+                        notifyChildrenChanged(MEDIA_ROOT_ID)
+                        if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
+                            preparePlayer(
+                                musicSource.songs,
+                                musicSource.songs[0],
+                                false
+                            )
+                            isPlayerInitialized = true
                         }
+
                     } else {
                         mediaSessionCompat.sendSessionEvent(
                             DATABASE_ERROR,

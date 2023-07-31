@@ -12,6 +12,8 @@ import com.hossainehs.palplayer.domain.use_case.CreateMediaMetaDataCompatUseCase
 import com.hossainehs.palplayer.domain.use_case.CreateMediaSourcesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetMediaFileByUri
 import com.hossainehs.palplayer.domain.use_case.GetMediaFilesUseCase
+import com.hossainehs.palplayer.domain.use_case.GetSubCategoriesWithMediaFilesUseCase
+import com.hossainehs.palplayer.domain.use_case.GetSubCategoryWithMediaFilesUseCase
 import com.hossainehs.palplayer.service.MusicServiceConnection
 import com.hossainehs.palplayer.service.MusicSource
 import dagger.Module
@@ -132,16 +134,28 @@ object ServiceModule {
         )
     }
 
+    @ServiceScoped
+    @Provides
+    fun provideGetSubCategoryWithMediaFilesUseCase(
+        repository: Repository
+    ): GetSubCategoriesWithMediaFilesUseCase {
+        return GetSubCategoriesWithMediaFilesUseCase(
+            repository
+        )
+    }
+
 
     @ServiceScoped
     @Provides
     fun provideMusicSource(
         createMediaSourcesUseCase: CreateMediaSourcesUseCase,
         getMediaFilesUseCase: GetMediaFilesUseCase,
+        getSubCategoriesWithMediaFilesUseCase: GetSubCategoriesWithMediaFilesUseCase
     ): MusicSource {
         return MusicSource(
             createMediaSourcesUseCase,
             getMediaFilesUseCase,
+            getSubCategoriesWithMediaFilesUseCase
         )
     }
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.hossainehs.mediaplayer.data.util.Resource
 import com.hossainehs.palplayer.data.util.ConstValues.MEDIA_ROOT_ID
+import com.hossainehs.palplayer.data.util.ConstValues.PLAYLIST_ROOT_ID
 import com.hossainehs.palplayer.domain.model.MediaFile
 import com.hossainehs.palplayer.domain.use_case.UseCases
 import com.hossainehs.palplayer.presentation.util.MediaFilesEvents
@@ -60,7 +61,7 @@ class MediaFilesViewModel @Inject constructor(
                     children: MutableList<MediaBrowserCompat.MediaItem>
                 ) {
                     super.onChildrenLoaded(parentId, children)
-                    println(children)
+                    //println(children)
                     val items = children.map {
                         MediaFile(
                             audioFileId = it.mediaId?.toInt(),

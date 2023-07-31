@@ -1,8 +1,6 @@
 package com.hossainehs.palplayer.service
 
-import android.content.Context
 import android.media.MediaMetadata
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -11,20 +9,13 @@ import androidx.core.net.toUri
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.hossainehs.palplayer.domain.model.MediaFile
-import com.hossainehs.palplayer.domain.model.SubCategory
-import com.hossainehs.palplayer.domain.use_case.CreateMediaMetaDataCompatUseCase
 import com.hossainehs.palplayer.domain.use_case.CreateMediaSourcesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetMediaFilesUseCase
+import com.hossainehs.palplayer.domain.use_case.GetSubCategoriesWithMediaFilesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
@@ -43,13 +34,12 @@ import kotlinx.coroutines.withContext
 class MusicSource(
     private val createMediaSourcesUseCase: CreateMediaSourcesUseCase,
     private val getMediaFilesUseCase: GetMediaFilesUseCase,
+    private val getSubCategoriesWithMediaFilesUseCase: GetSubCategoriesWithMediaFilesUseCase
 ) {
 
     var songs = emptyList<MediaMetadataCompat>()
 
-    var mediaFileList: List<MediaFile> = listOf()
-
-    var subFolders = emptyList<SubCategory>()
+    var subCategories = emptyList<MediaMetadataCompat>()
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
     private var state = State.STATE_CREATED
@@ -66,6 +56,64 @@ class MusicSource(
                 field = value
             }
         }
+
+    fun whenReady(action: (Boolean) -> Unit): Boolean {
+        return if (state == State.STATE_CREATED || state == State.STATE_INITIALIZING) {
+            onReadyListeners += action
+            false
+        } else {
+            action(state == State.STATE_INITIALIZED)
+            true
+        }
+    }
+
+    suspend fun fetchSubCategoriesMediaData(
+        subCategoryId: Int,
+        mainCategoryName: String
+    ) {
+        withContext(Dispatchers.IO) {
+            state = State.STATE_INITIALIZING
+            getSubCategoriesWithMediaFilesUseCase(
+                subCategoryId,
+                mainCategoryName,
+            ).collectLatest { mediaFiles ->
+                subCategories = mediaFiles.map { subCategoryWithMediaFiles ->
+                    MediaMetadataCompat.Builder()
+                        .putString(
+                            MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
+                            subCategoryWithMediaFiles.subCategory.mainCategoryNumber.toString()
+                        )
+                        .putString(
+                            MediaMetadataCompat.METADATA_KEY_TITLE,
+                            subCategoryWithMediaFiles.subCategory.mainCategoryName
+                        )
+
+                        .build()
+                }
+                state = State.STATE_INITIALIZED
+            }
+        }
+
+    }
+
+    fun subCategoriesAsMediaItem(): MutableList<MediaBrowserCompat.MediaItem> {
+        return subCategories.map { song ->
+            val description = MediaDescriptionCompat.Builder()
+                .setMediaId(
+                    song.description.mediaId
+                )
+                .setTitle(
+                    song.description.title
+                )
+                .build()
+            //it can be a song or anything else
+            MediaBrowserCompat.MediaItem(
+                description,
+                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+            )
+        }.toMutableList()
+    }
+
 
     fun fetchMediaData(
         subCategoryId: Int
@@ -114,18 +162,7 @@ class MusicSource(
     }
 
 
-    fun whenReady(action: (Boolean) -> Unit): Boolean {
-        return if (state == State.STATE_CREATED || state == State.STATE_INITIALIZING) {
-            onReadyListeners += action
-            false
-        } else {
-            action(state == State.STATE_INITIALIZED)
-            true
-        }
-    }
-
-
-    fun asMediaSource(dataSourceFactory: DefaultDataSource.Factory): Flow<ConcatenatingMediaSource> {
+    fun asMediaSource(dataSourceFactory: DefaultDataSource.Factory): ConcatenatingMediaSource {
         val concatenatingMediaSource = ConcatenatingMediaSource()
         val mutableListMediaSource = mutableListOf<MediaSource>()
         songs.forEach { mediaFile ->
@@ -135,11 +172,11 @@ class MusicSource(
             )
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
-        return flow { emit(concatenatingMediaSource) }
+        return concatenatingMediaSource
     }
 
-    fun asMediaItem(): Flow<MutableList<MediaBrowserCompat.MediaItem>> {
-        return flow { emit( songs.map { song ->
+    fun asMediaItem(): MutableList<MediaBrowserCompat.MediaItem> {
+        return songs.map { song ->
             val description = MediaDescriptionCompat.Builder()
                 .setMediaUri(
                     song.getString(
@@ -201,10 +238,10 @@ class MusicSource(
                 description,
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
             )
-        }.toMutableList()) }
+        }.toMutableList()
     }
-}
 
+}
 
 enum class State {
     STATE_CREATED,
