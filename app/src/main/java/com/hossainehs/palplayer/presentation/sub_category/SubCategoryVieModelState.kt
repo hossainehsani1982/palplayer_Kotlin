@@ -1,12 +1,9 @@
-package com.hossainehs.palplayer.presentation.main_category
+package com.hossainehs.palplayer.presentation.sub_category
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
-import com.hossainehs.palplayer.domain.model.SubCategory
-import kotlinx.coroutines.flow.Flow
 
-class MainCategoryVieModelState(
+class SubCategoryVieModelState(
     private val savedStateHandle: SavedStateHandle
 ) {
 

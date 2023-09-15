@@ -14,7 +14,9 @@ import com.hossainehs.palplayer.domain.use_case.GetMediaFilesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetSubCategoriesWithMediaFilesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -40,6 +42,7 @@ class MusicSource(
     var songs = emptyList<MediaMetadataCompat>()
 
     var subCategories = emptyList<MediaMetadataCompat>()
+
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
     private var state = State.STATE_CREATED
@@ -67,21 +70,21 @@ class MusicSource(
         }
     }
 
-    suspend fun fetchSubCategoriesMediaData(
-        subCategoryId: Int,
+    fun fetchSubCategoriesMediaData(
+        mainCategoryId: Int,
         mainCategoryName: String
     ) {
-        withContext(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             state = State.STATE_INITIALIZING
             getSubCategoriesWithMediaFilesUseCase(
-                subCategoryId,
+                mainCategoryId,
                 mainCategoryName,
             ).collectLatest { mediaFiles ->
                 subCategories = mediaFiles.map { subCategoryWithMediaFiles ->
                     MediaMetadataCompat.Builder()
                         .putString(
                             MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
-                            subCategoryWithMediaFiles.subCategory.mainCategoryNumber.toString()
+                            subCategoryWithMediaFiles.subCategory.subCategoryId.toString()
                         )
                         .putString(
                             MediaMetadataCompat.METADATA_KEY_TITLE,
@@ -97,21 +100,26 @@ class MusicSource(
     }
 
     fun subCategoriesAsMediaItem(): MutableList<MediaBrowserCompat.MediaItem> {
+        println("results: ${subCategories.size}")
         return subCategories.map { song ->
-            val description = MediaDescriptionCompat.Builder()
-                .setMediaId(
-                    song.description.mediaId
-                )
-                .setTitle(
-                    song.description.title
-                )
-                .build()
-            //it can be a song or anything else
-            MediaBrowserCompat.MediaItem(
-                description,
-                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-            )
-        }.toMutableList()
+                    println(
+                        "song.description.mediaId ${song.description.mediaId}" +
+                                " ${song.description.title}"
+                    )
+                    val description = MediaDescriptionCompat.Builder()
+                        .setMediaId(
+                            song.description.mediaId
+                        )
+                        .setTitle(
+                            song.description.title
+                        )
+                        .build()
+                    //it can be a song or anything else
+                    MediaBrowserCompat.MediaItem(
+                        description,
+                        MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                    )
+                }.toMutableList()
     }
 
 

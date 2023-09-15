@@ -6,7 +6,7 @@
     app:startDestination="@id/mainCategoryFragment">
     <fragment
         android:id="@+id/mainCategoryFragment"
-        android:name="com.hossainehs.palplayer.presentation.main_category.MainCategoryFragment"
+        android:name="com.hossainehs.palplayer.presentation.sub_category.SubCategoryFragment"
         android:label="fragment_main_category"
         tools:layout="@layout/fragment_main_category" >
         <action

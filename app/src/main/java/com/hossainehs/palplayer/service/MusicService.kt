@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.notify
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -91,32 +92,7 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
 
         musicSource.fetchMediaData(1)
-
-
-        mediaSessionPreparer = MediaPlayBackPreparer(
-            musicSource = musicSource,
-            serviceScope = serviceScope
-        ) {
-            currentPlayingSong = it
-
-            preparePlayer(
-                musicSource.songs,
-                it,
-                true
-            )
-        }
-
-
-        notificationManager = MusicNotificationManager(
-            context = this,
-            exoPlayer = exoPlayer,
-            sessionToken = mediaSessionCompat.sessionToken,
-            notificationListener = MusicPlayerNotificationListener(this@MusicService)
-        ) {
-            currentSongDuration = exoPlayer.duration
-            exoPlayer.mediaMetadata.artist
-            //when the user click on the notification, we will navigate to the player fragment.
-        }
+        musicSource.fetchSubCategoriesMediaData(1, "music")
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
@@ -125,6 +101,38 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionCompat.apply {
             setSessionActivity(activityIntent)
             isActive = true
+        }
+
+        exoPlayerListener = ExoPlayerListener(
+            musicService = this@MusicService
+        )
+
+        notificationManager = MusicNotificationManager(
+            context = this,
+            exoPlayer = exoPlayer,
+            sessionToken = mediaSessionCompat.sessionToken,
+            notificationListener = MusicPlayerNotificationListener(
+                this@MusicService
+            )
+        ) {
+            currentSongDuration = exoPlayer.duration
+            exoPlayer.mediaMetadata.artist
+            //when the user click on the notification, we will navigate to the player fragment.
+        }
+
+        mediaSessionPreparer = MediaPlayBackPreparer(
+            musicSource = musicSource,
+            serviceScope = serviceScope,
+            musicService = this@MusicService
+        ) { mediaMetaData ->
+
+            currentPlayingSong = mediaMetaData
+
+            preparePlayer(
+                musicSource.songs,
+                mediaMetaData,
+                true
+            )
         }
 
         sessionToken = mediaSessionCompat.sessionToken
@@ -136,21 +144,6 @@ class MusicService : MediaBrowserServiceCompat() {
         exoPlayerListener = ExoPlayerListener(this)
         exoPlayer.addListener(exoPlayerListener)
 
-
-
-
-        exoPlayerListener = ExoPlayerListener(
-            musicService = this@MusicService
-        )
-
-        mediaSessionPreparer = MediaPlayBackPreparer(
-            musicSource = musicSource,
-            serviceScope = serviceScope
-        ) { mediaMetaData ->
-            currentSongDuration = mediaMetaData?.getLong(
-                MediaMetadata.METADATA_KEY_DURATION
-            ) ?: 0L
-        }
 
     }
 
@@ -184,21 +177,34 @@ class MusicService : MediaBrowserServiceCompat() {
         )
 
     }
+    var currentResult: Result<List<MediaBrowserCompat.MediaItem>>? = null
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         when (parentId) {
-            PLAYLIST_ROOT_ID ->
-            {
-                println("PLAYLIST_ROOT_ID connected")
-                val resultSent = musicSource.whenReady { isInitialized ->
+            PLAYLIST_ROOT_ID -> {
+                try {
+                    result.detach()
+                }catch (e: Exception){
+                    println("onLoadChildren exception: ${e.message}")
+                }
+                val resultsSent = musicSource.whenReady { isInitialized ->
                     if (isInitialized) {
-                        val subCategoriesWithMediaFiles = musicSource.subCategoriesAsMediaItem()
-                        result.sendResult(subCategoriesWithMediaFiles)
-                        notifyChildrenChanged(PLAYLIST_ROOT_ID)
-                    }else {
+                            try {
+                                var results = musicSource.asMediaItem()
+
+                                result.sendResult(results)
+                                if (!isPlayerInitialized && musicSource.subCategories.isNotEmpty()) {
+                                    isPlayerInitialized = true
+                                }
+
+                            } catch (e: Exception) {
+
+                            }
+
+                    } else {
                         mediaSessionCompat.sendSessionEvent(
                             DATABASE_ERROR,
                             null
@@ -206,18 +212,21 @@ class MusicService : MediaBrowserServiceCompat() {
                         result.sendResult(null)
                     }
                 }
-                if (!resultSent) {
-                    result.detach()
+                if (!resultsSent) {
+                    try {
+                        result.detach()
+                    }catch (e: Exception){
+                        println("onLoadChildren exception: ${e.message}")
+                    }
                 }
+
             }
 
             MEDIA_ROOT_ID -> {
-
                 println("MEDIA_ROOT_ID connected")
-                val resultSent = musicSource.whenReady { isInitialized ->
+                musicSource.whenReady { isInitialized ->
                     if (isInitialized) {
                         result.sendResult(musicSource.asMediaItem())
-                        notifyChildrenChanged(MEDIA_ROOT_ID)
                         if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
                             preparePlayer(
                                 musicSource.songs,
@@ -235,9 +244,7 @@ class MusicService : MediaBrowserServiceCompat() {
                         result.sendResult(null)
                     }
                 }
-                if (!resultSent) {
-                    result.detach()
-                }
+
             }
         }
     }

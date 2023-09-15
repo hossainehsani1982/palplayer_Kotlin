@@ -1,4 +1,4 @@
-package com.hossainehs.palplayer.presentation.main_category
+package com.hossainehs.palplayer.presentation.sub_category
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,24 +21,24 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
-    MainCategoryAdapter.OnItemClickListener {
+class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
+    SubCategoryAdapter.OnItemClickListener {
     private lateinit var binding: FragmentMainCategoryBinding
-    private val mainCategoryViewModel: MainCategoryViewModel by viewModels()
-    private lateinit var mainCategoryAdapter: MainCategoryAdapter
+    private val subCategoryViewModel: SubCategoryViewModel by viewModels()
+    private lateinit var subCategoryAdapter: SubCategoryAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainCategoryBinding.bind(view)
 
-        mainCategoryAdapter = MainCategoryAdapter(this)
+        subCategoryAdapter = SubCategoryAdapter(this)
 
         subscribeToObserves()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            mainCategoryViewModel.pref.getCurrentFragmentPageNumber().collect {
-                mainCategoryViewModel.onEvents(
-                    MainCategoryViewModelEvents.OnMainCategoryChanged(
+            subCategoryViewModel.pref.getCurrentFragmentPageNumber().collect {
+                subCategoryViewModel.onEvents(
+                    SubCategoryViewModelEvents.OnSubCategoryChanged(
                         it
                     )
                 )
@@ -47,7 +47,7 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
 
         binding.apply {
             rvSubCategories.apply {
-                adapter = mainCategoryAdapter
+                adapter = subCategoryAdapter
                 addItemDecoration(
                     DividerItemDecoration(
                         view.context,
@@ -55,10 +55,11 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
                     )
                 )
                 layoutManager = LinearLayoutManager(requireContext())
-                mainCategoryViewModel.subCategoryItems.observe(
+                subCategoryViewModel.subCategoryItems.observe(
                     viewLifecycleOwner
                 ) {
-                    mainCategoryAdapter.submitList(it.data)
+                    println("subCategoryItems: ${it.data?.size}")
+                    subCategoryAdapter.submitList(it.data)
                 }
             }
 
@@ -78,8 +79,8 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
 
                 // Set the positive button
                 builder.setPositiveButton("OK") { _, _ ->
-                    mainCategoryViewModel.onEvents(
-                        MainCategoryViewModelEvents.OnAddNewSubCategory(
+                    subCategoryViewModel.onEvents(
+                        SubCategoryViewModelEvents.OnAddNewSubCategory(
                             editText.text.toString()
                         )
                     )
@@ -98,8 +99,8 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
         }
         setFragmentResultListener("subCategoryID") { _, bundle ->
             val result = bundle.getInt("subCategoryID")
-            mainCategoryViewModel.onEvents(
-                MainCategoryViewModelEvents.OnMainCategoryChanged(
+            subCategoryViewModel.onEvents(
+                SubCategoryViewModelEvents.OnSubCategoryChanged(
                     result
                 )
             )
@@ -107,12 +108,12 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
     }
 
     private fun subscribeToObserves() {
-        mainCategoryViewModel.mainCategoryEvents.asLiveData().observe(viewLifecycleOwner) { event ->
+        subCategoryViewModel.mainCategoryEvents.asLiveData().observe(viewLifecycleOwner) { event ->
             when (event) {
 
                 is SubCategoryPageEvents.NavigateToMediaFiles -> {
                     val action =
-                        MainCategoryFragmentDirections.actionMainCategoryFragmentToAudioFilesFragment(
+                        SubCategoryFragmentDirections.actionMainCategoryFragmentToAudioFilesFragment(
                             event.subCategoryId
                         )
                     findNavController().navigate(action)
@@ -122,8 +123,8 @@ class MainCategoryFragment : Fragment(R.layout.fragment_main_category),
     }
 
     override fun onItemClick(subCategoryWithMediaFile: SubCategoryWithMediaFile) {
-        mainCategoryViewModel.onEvents(
-            MainCategoryViewModelEvents.OnNavigateToMediaFiles(
+        subCategoryViewModel.onEvents(
+            SubCategoryViewModelEvents.OnNavigateToMediaFiles(
                 subCategoryWithMediaFile
             )
         )

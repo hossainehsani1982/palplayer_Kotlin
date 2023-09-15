@@ -53,11 +53,14 @@ class MusicServiceConnection(
     val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
 
-    fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+    fun subscribe(
+        parentId: String,
+        callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
     }
 
-    fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+    fun unsubscribe(parentId: String,
+                    callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.unsubscribe(parentId, callback)
     }
 
@@ -85,7 +88,10 @@ class MusicServiceConnection(
 
         override fun onConnected() {
             Log.d("MusicServiceConnection", "CONNECTED")
-            mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
+            mediaController = MediaControllerCompat(
+                context,
+                mediaBrowser.sessionToken
+            ).apply {
                 registerCallback(MediaControllerCallback())
             }
             _isConnected.postValue(Event(Resource.success(true)))

@@ -6,10 +6,10 @@ class GetSubCategoriesWithMediaFilesUseCase (
     private val repository: Repository
         ) {
     operator fun invoke(
-        subCategoryId: Int,
+        mainCategoryId: Int,
         mainCategoryName: String
     ) = repository.getSubCategoriesWithMediaFilesByMainCategoryName(
-        subCategoryId,
+        mainCategoryId,
         mainCategoryName
     )
 }
