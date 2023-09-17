@@ -50,7 +50,7 @@ class MediaPlayBackPreparer(
                         mainCategoryName!!)
                     musicSource.subCategoriesAsMediaItem()
 
-                    //musicService.notifyChildrenChanged(ConstValues.PLAYLIST_ROOT_ID)
+                    musicService.notifyChildrenChanged(ConstValues.PLAYLIST_ROOT_ID)
                 }
 
             }
