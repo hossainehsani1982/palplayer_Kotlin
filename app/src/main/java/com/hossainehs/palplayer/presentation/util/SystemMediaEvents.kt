@@ -1,6 +1,8 @@
 package com.hossainehs.palplayer.presentation.util
 
 sealed class SystemMediaEvents {
-    object OnBtnDoneClicked : SystemMediaEvents()
+    data class OnBtnDoneClicked(
+        val isMediaAdded : Boolean
+    ) : SystemMediaEvents()
 
 }

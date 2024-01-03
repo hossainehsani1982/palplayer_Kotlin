@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -69,7 +71,13 @@ class SystemMediaFilesFragment :
         systemMediaFileViewModel.systemMediaEvents.asLiveData()
             .observe(viewLifecycleOwner) { event ->
                 when (event) {
-                    SystemMediaEvents.OnBtnDoneClicked -> {
+                    is SystemMediaEvents.OnBtnDoneClicked -> {
+                        setFragmentResult(
+                            "isMediaAdded", bundleOf(
+                                "isMediaAdded" to
+                                        event.isMediaAdded
+                            )
+                        )
                         findNavController().popBackStack()
                     }
                 }

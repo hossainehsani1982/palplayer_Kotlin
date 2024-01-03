@@ -180,19 +180,24 @@ class MediaFilesViewModel @Inject constructor(
                     state.updateProgress(events.newProgress)
                 }
             }
+
+            MediaFilesViewModelEvents.OnMediaAdded -> {
+                viewModelScope.launch {
+                    loadMediaFiles()
+                }
+            }
         }
     }
 
     private suspend fun loadMediaFiles() {
-        useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId)?.let {subCatWithMediaFiles ->
+        useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId)?.let { subCatWithMediaFiles ->
             state.updateMediaFilesList(
                 subCatWithMediaFiles.mediaFiles
             )
-            state.mediaFilesList.value?.let {listMediaFiles ->
+            state.mediaFilesList.value?.let { listMediaFiles ->
                 setMediaItems(listMediaFiles)
             }
         }
-
 
 
     }

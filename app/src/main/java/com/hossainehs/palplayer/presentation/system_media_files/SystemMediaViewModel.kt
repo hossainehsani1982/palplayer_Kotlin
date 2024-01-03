@@ -24,12 +24,11 @@ class SystemMediaViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state = SystemMediaViewModelState(savedStateHandle)
-    val pref = preferences
 
     private val subCategoryId = savedStateHandle.get<Int>("subCategoryId") ?: 0
 
     private val _systemMediaEvents = Channel<SystemMediaEvents>()
-    private lateinit var selectedMediaFile: MutableList<SystemMediaFile>
+    private var selectedMediaFile: MutableList<SystemMediaFile> = mutableListOf()
     val systemMediaEvents = _systemMediaEvents.receiveAsFlow()
 
     init {
@@ -104,7 +103,19 @@ class SystemMediaViewModel @Inject constructor(
 
     private fun returnToMediaFilesFragment() {
         viewModelScope.launch {
-            _systemMediaEvents.send(SystemMediaEvents.OnBtnDoneClicked)
+            if (state.selectedSystemMediaFileList.isNotEmpty()) {
+                _systemMediaEvents.send(
+                    SystemMediaEvents.OnBtnDoneClicked(
+                        true
+                    )
+                )
+            } else {
+                _systemMediaEvents.send(
+                    SystemMediaEvents.OnBtnDoneClicked(
+                        false
+                    )
+                )
+            }
         }
     }
 

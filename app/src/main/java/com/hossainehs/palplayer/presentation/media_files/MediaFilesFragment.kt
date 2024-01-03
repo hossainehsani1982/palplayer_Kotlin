@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -72,7 +73,15 @@ class MediaFilesFragment :
                     mediaFilesAdapter.submitList(it)
                 }
             }
+        }
 
+        setFragmentResultListener("isMediaAdded") { _, bundle ->
+            val isMediaAdded = bundle.getBoolean("isMediaAdded")
+            if (isMediaAdded) {
+                mediaFilesViewModel.onEvent(
+                    MediaFilesViewModelEvents.OnMediaAdded
+                )
+            }
         }
     }
 

@@ -18,6 +18,8 @@ sealed class MediaFilesViewModelEvents {
 
     data object OnNextButtonClicked : MediaFilesViewModelEvents()
 
+    data object OnMediaAdded: MediaFilesViewModelEvents()
+
     data class OnSelectedAudioChange(
         val mediaFile: MediaFile
     ): MediaFilesViewModelEvents()
