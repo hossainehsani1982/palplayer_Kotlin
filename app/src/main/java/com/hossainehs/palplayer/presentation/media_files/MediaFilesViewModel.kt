@@ -26,12 +26,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MediaFilesViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val useCases: UseCases,
     private val audioServicePlaybackHandler: AudioServicePlaybackHandler
 ) : ViewModel() {
 
-    private val subCategoryId = savedStateHandle.get<Int>("subCategoryId") ?: 1
+    private val subCatId = savedStateHandle.get<Int>("subCatId") ?: 0
     val state = MediaFilesViewModelState(savedStateHandle)
 
     private val _mediaFilesEvents = Channel<MediaFilesEvents>()
@@ -44,11 +44,12 @@ class MediaFilesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadMediaFiles()
+
             /**
             collecting audio state from audio service handler
             -> audioState: StateFlow<AppAudioState>
-
              **/
+
             audioServicePlaybackHandler.audioState.collectLatest { appAudioState ->
 
                 when (appAudioState) {
@@ -111,7 +112,7 @@ class MediaFilesViewModel @Inject constructor(
                 viewModelScope.launch {
                     _mediaFilesEvents.send(
                         MediaFilesEvents.NavigateToSysTemMediaFiles(
-                            subCategoryId
+                            subCatId
                         )
                     )
                 }
@@ -148,7 +149,12 @@ class MediaFilesViewModel @Inject constructor(
             }
 
             MediaFilesViewModelEvents.On10ForwardButtonClicked -> {
-
+                viewModelScope.launch {
+                    audioServicePlaybackHandler.onPlayerEvents(
+                        AppPlayerEvents.SeekTo,
+                        seekPosition = state.progress.value!!.toLong() + 10000,
+                    )
+                }
 
             }
 
@@ -190,7 +196,7 @@ class MediaFilesViewModel @Inject constructor(
     }
 
     private suspend fun loadMediaFiles() {
-        useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId)?.let { subCatWithMediaFiles ->
+        useCases.getSubCategoryWithMediaFilesUseCase(subCatId)?.let { subCatWithMediaFiles ->
             state.updateMediaFilesList(
                 subCatWithMediaFiles.mediaFiles
             )
@@ -223,6 +229,7 @@ class MediaFilesViewModel @Inject constructor(
     }
 
     private fun calculateProgress(currentPosition: Long) {
+        state.updateCurrentPosition(currentPosition)
         if (state.duration > 0) {
             state.updateProgress((currentPosition.toFloat() / state.duration.toFloat()) * 100f)
             println(state.progress)

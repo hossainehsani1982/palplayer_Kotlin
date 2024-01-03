@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/mainCategoryFragment">
+    app:startDestination="@id/subCategoryFragment">
     <fragment
-        android:id="@+id/mainCategoryFragment"
+        android:id="@+id/subCategoryFragment"
         android:name="com.hossainehs.palplayer.presentation.sub_category.SubCategoryFragment"
         android:label="fragment_main_category"
         tools:layout="@layout/fragment_main_category" >
         <action
-            android:id="@+id/action_mainCategoryFragment_to_audioFilesFragment"
-            app:destination="@id/audioFilesFragment" />
+            android:id="@+id/action_subCategoryFragment_to_mediaFilesFragment"
+            app:destination="@id/mediaFilesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/audioFilesFragment"
+        android:id="@+id/mediaFilesFragment"
         android:name="com.hossainehs.palplayer.presentation.media_files.MediaFilesFragment"
         android:label="fragment_audio_files"
         tools:layout="@layout/fragment_audio_files" >
-        <argument
-            android:name="subCategoryId"
-            app:argType="integer" />
         <action
-            android:id="@+id/action_audioFilesFragment_to_systemMediaFilesFragment"
+            android:id="@+id/action_mediaFilesFragment_to_systemMediaFilesFragment"
             app:destination="@id/systemMediaFilesFragment" />
+        <argument
+            android:name="subCatId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/systemMediaFilesFragment"
@@ -31,7 +31,7 @@
         android:label="fragment_system_media_files"
         tools:layout="@layout/fragment_system_media_files" >
         <argument
-            android:name="subCategoryId"
+            android:name="subCatId"
             app:argType="integer" />
     </fragment>
 </navigation>

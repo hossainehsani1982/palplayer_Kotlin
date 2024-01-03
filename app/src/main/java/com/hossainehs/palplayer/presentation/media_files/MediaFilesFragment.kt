@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -28,7 +29,7 @@ class MediaFilesFragment :
     MediaFilesAdapter.MediaFilesAdapterListener {
 
     private lateinit var binding: FragmentAudioFilesBinding
-    private lateinit var mediaFilesViewModel: MediaFilesViewModel
+    private val mediaFilesViewModel: MediaFilesViewModel by viewModels()
     private lateinit var mediaFilesAdapter: MediaFilesAdapter
     private var isServiceRunning = false
 
@@ -37,9 +38,9 @@ class MediaFilesFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentAudioFilesBinding.bind(view)
-        mediaFilesViewModel = ViewModelProvider(
-            requireActivity()
-        )[MediaFilesViewModel::class.java]
+//        mediaFilesViewModel = ViewModelProvider(
+//            requireActivity()
+//        )[MediaFilesViewModel::class.java]
 
         subscribeToObservers()
         mediaFilesAdapter = MediaFilesAdapter(this)
@@ -74,7 +75,10 @@ class MediaFilesFragment :
                 }
             }
         }
-
+        /**
+        will fix the issue of not updating the MediaFile list. when  new media file/s are added,
+        it will call the onEvent function in the viewModel to load the media files again
+         **/
         setFragmentResultListener("isMediaAdded") { _, bundle ->
             val isMediaAdded = bundle.getBoolean("isMediaAdded")
             if (isMediaAdded) {
@@ -101,7 +105,7 @@ class MediaFilesFragment :
 
                 is MediaFilesEvents.NavigateToSysTemMediaFiles -> {
                     val action =
-                        MediaFilesFragmentDirections.actionAudioFilesFragmentToSystemMediaFilesFragment(
+                        MediaFilesFragmentDirections.actionMediaFilesFragmentToSystemMediaFilesFragment(
                             event.subCategoryId
                         )
                     findNavController().navigate(

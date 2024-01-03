@@ -1,25 +1,21 @@
 package com.hossainehs.palplayer.presentation.sub_category
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.hossainehs.palplayer.R
-import com.hossainehs.palplayer.data.util.ConstValues.NOTIFICATION_ID
 import com.hossainehs.palplayer.databinding.FragmentMainCategoryBinding
 import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
-import com.hossainehs.palplayer.media_item_service.MediaBrowserService
 import com.hossainehs.palplayer.presentation.util.SubCategoryPageEvents
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -124,11 +120,15 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
             when (event) {
 
                 is SubCategoryPageEvents.NavigateToMediaFiles -> {
-                    val action =
-                        SubCategoryFragmentDirections.actionMainCategoryFragmentToAudioFilesFragment(
-                            event.subCategoryId
+                    println("Event: ${event.subCategoryId}")
+                       val action =
+                            SubCategoryFragmentDirections.actionSubCategoryFragmentToMediaFilesFragment(
+                                event.subCategoryId
+                            )
+                        findNavController().navigate(
+                            action
                         )
-                    findNavController().navigate(action)
+
                 }
 
                 is SubCategoryPageEvents.LoadSubCategories -> {

@@ -3,9 +3,6 @@ package com.hossainehs.palplayer.presentation.command_center
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hossainehs.palplayer.domain.sharedPreferences.Preferences
-import com.hossainehs.palplayer.domain.use_case.UseCases
-import com.hossainehs.palplayer.player_service.AppAudioState
 import com.hossainehs.palplayer.player_service.AudioServicePlaybackHandler
 import com.hossainehs.palplayer.presentation.media_files.UIState
 import com.hossainehs.palplayer.presentation.util.CommandCenterEvents
@@ -14,10 +11,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -68,7 +63,7 @@ class CommandCenterViewModel @Inject constructor(
                     when (event.isPlaying) {
                         true -> {
                             _commandCenterEvents.send(
-                                CommandCenterEvents.OnPlayClick
+                                CommandCenterEvents.OnPlayPauseClick
                             )
                         }
 
