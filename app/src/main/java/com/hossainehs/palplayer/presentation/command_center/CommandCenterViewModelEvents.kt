@@ -1,7 +1,5 @@
 package com.hossainehs.palplayer.presentation.command_center
 
-import android.support.v4.media.MediaMetadataCompat
-import com.hossainehs.palplayer.service.MusicService
 import com.hossainehs.palplayer.domain.model.MediaFile
 
 sealed class CommandCenterViewModelEvents {
@@ -32,8 +30,6 @@ sealed class CommandCenterViewModelEvents {
 
 
 
-    data class SetMusicService(
-        val musicService: MusicService
-    ) : CommandCenterViewModelEvents()
+
 
 }

@@ -29,11 +29,12 @@ class SystemMediaViewModel @Inject constructor(
     private val subCategoryId = savedStateHandle.get<Int>("subCategoryId") ?: 0
 
     private val _systemMediaEvents = Channel<SystemMediaEvents>()
-    private lateinit var selectedMediaFile : MutableList<SystemMediaFile>
+    private lateinit var selectedMediaFile: MutableList<SystemMediaFile>
     val systemMediaEvents = _systemMediaEvents.receiveAsFlow()
 
     init {
         getSubCategoryWithMediaFiles(subCategoryId)
+
     }
 
     fun onEvents(events: SystemMediaViewModelEvents) {
@@ -42,7 +43,6 @@ class SystemMediaViewModel @Inject constructor(
                 selectedMediaFile = state.selectedSystemMediaFileList
                 selectedMediaFile.add(events.systemMediaFile)
                 state.updateSelectedSystemFiles(selectedMediaFile)
-                println(state.selectedSystemMediaFileList.size)
             }
 
             is SystemMediaViewModelEvents.RemoveSelectedMediaFile -> {
@@ -82,20 +82,20 @@ class SystemMediaViewModel @Inject constructor(
 
     private fun getSubCategoryWithMediaFiles(subCategoryId: Int) {
         viewModelScope.launch {
-//            useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId).collect {
-//                getSystemMediaFiles(it.subCategory)
-//                state.updateCurrentSubCategory(it.subCategory)
-//            }
+            state.updateCurrentSubCategory(
+                useCases.getSubCategoryWithMediaFilesUseCase(
+                    subCategoryId
+                ).subCategory
+            )
+            getSystemMediaFiles()
         }
     }
 
-    private fun getSystemMediaFiles(subCategory: SubCategory) {
-        viewModelScope.launch {
-            useCases.getSystemMediaFilesUseCase(
-                subCategory
-            ).collect {
-                state.updateSubCatWithMediaFilesList(it)
-            }
+    private suspend fun getSystemMediaFiles() {
+        useCases.getSystemMediaFilesUseCase(
+            state.currentSubCategory!!
+        ).collect {
+            state.updateSubCatWithMediaFilesList(it)
         }
     }
 

@@ -84,17 +84,14 @@ class CommandCenterViewModel @Inject constructor(
                 }
             }
 
-
-            is CommandCenterViewModelEvents.SetMusicService -> {
-
-            }
         }
     }
+}
 
-    private fun checkIfAppIsCurrentlyPlaying() {
-        state.progressBarPosition = preferences.getNowPlayingAtt()
-    }
-
+private fun checkIfAppIsCurrentlyPlaying() {
 
 }
+
+
+
 

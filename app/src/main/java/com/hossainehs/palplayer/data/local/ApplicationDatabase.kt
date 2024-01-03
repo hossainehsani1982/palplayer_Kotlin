@@ -10,7 +10,8 @@ import com.hossainehs.palplayer.domain.model.SubCategory
         SubCategory::class,
         MediaFile::class,
     ],
-    version = 3
+    version = 3,
+    exportSchema = false
 )
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract val dao: AppDao

@@ -8,8 +8,8 @@ class GetMediaFilesUseCase(
     private val repository: Repository
 ) {
     operator fun invoke(
-        subCategoryId: Int
+        subCatId: Int
     ): Flow<List<MediaFile>> {
-        return repository.getMediaFilesBySubCategoryId(subCategoryId)
+        return repository.getMediaFilesBySubCategoryId(subCatId)
     }
 }

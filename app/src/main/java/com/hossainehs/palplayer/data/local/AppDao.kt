@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 import com.hossainehs.palplayer.domain.model.MediaFile
 import com.hossainehs.palplayer.domain.model.SubCategory
 import kotlinx.coroutines.flow.Flow
@@ -20,12 +20,10 @@ interface AppDao {
         """
         SELECT * FROM subcategory_table
         WHERE mainCategoryNumber = :mainCategoryId
-        AND mainCategoryName = :mainCategoryName
         """
     )
     fun getSubCategoriesWithMediaFiles(
         mainCategoryId: Int,
-        mainCategoryName: String
     ): Flow<List<SubCategoryWithMediaFile>>
 
     @Transaction

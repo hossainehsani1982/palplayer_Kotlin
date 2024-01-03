@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
 import com.hossainehs.palplayer.databinding.SubCategoryItemBinding
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 
 class SubCategoryAdapter(private val listener: OnItemClickListener) :
     ListAdapter<SubCategoryWithMediaFile, SubCategoryAdapter.MainCategoryViewHolder>(

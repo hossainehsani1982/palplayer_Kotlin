@@ -2,32 +2,32 @@ package com.hossainehs.palplayer.presentation.media_files
 
 import android.support.v4.media.MediaMetadataCompat
 import com.hossainehs.palplayer.domain.model.MediaFile
-import com.hossainehs.palplayer.presentation.command_center.CommandCenterViewModelEvents
 
 sealed class MediaFilesViewModelEvents {
-    object NavigateBack : MediaFilesViewModelEvents()
+    data object NavigateBack : MediaFilesViewModelEvents()
 
-    object NavigateToSysTemMediaFiles : MediaFilesViewModelEvents()
-    data class OnPlayPauseButtonClicked(
-        val mediaItem: MediaFile,
-        var toggle: Boolean = false
-    ) : MediaFilesViewModelEvents()
+    data object NavigateToSysTemMediaFiles : MediaFilesViewModelEvents()
+    data object OnPlayPauseButtonClicked : MediaFilesViewModelEvents()
 
-    object OnPreviousButtonClicked: MediaFilesViewModelEvents()
+    data object OnPreviousButtonClicked: MediaFilesViewModelEvents()
 
-    object On30RewindButtonClicked: MediaFilesViewModelEvents()
+    data object On30RewindButtonClicked: MediaFilesViewModelEvents()
 
 
-    object On10ForwardButtonClicked: MediaFilesViewModelEvents()
+    data object On10ForwardButtonClicked: MediaFilesViewModelEvents()
 
-    object OnNextButtonClicked : MediaFilesViewModelEvents()
+    data object OnNextButtonClicked : MediaFilesViewModelEvents()
+
+    data class OnSelectedAudioChange(
+        val mediaFile: MediaFile
+    ): MediaFilesViewModelEvents()
 
     data class OnSeekTo(
         val position: Long
         ): MediaFilesViewModelEvents()
 
-    data class OnMediaItemCompatChanged(
-        val mediaMetadataCompat: MediaMetadataCompat
+    data class UpdateProgress(
+        val newProgress: Float
     ): MediaFilesViewModelEvents()
 
 

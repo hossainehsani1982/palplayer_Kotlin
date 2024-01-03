@@ -1,13 +1,11 @@
 package com.hossainehs.palplayer.presentation.media_files
 
 
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -16,15 +14,11 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.hossainehs.mediaplayer.data.util.Status
 import com.hossainehs.palplayer.R
 import com.hossainehs.palplayer.databinding.FragmentAudioFilesBinding
 import com.hossainehs.palplayer.domain.model.MediaFile
-import com.hossainehs.palplayer.presentation.command_center.CommandCenterFragment
-import com.hossainehs.palplayer.presentation.command_center.CommandCenterViewModelEvents
+import com.hossainehs.palplayer.player_service.PlayerService
 import com.hossainehs.palplayer.presentation.util.MediaFilesEvents
-import com.hossainehs.palplayer.service.MusicService
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -36,7 +30,7 @@ class MediaFilesFragment :
     private lateinit var binding: FragmentAudioFilesBinding
     lateinit var mediaFilesViewModel: MediaFilesViewModel
     private lateinit var mediaFilesAdapter: MediaFilesAdapter
-    private var playStatus = false
+    private var isServiceRunning = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,35 +42,8 @@ class MediaFilesFragment :
         )[MediaFilesViewModel::class.java]
 
         subscribeToObservers()
-
-
-        mediaFilesViewModel.isMediaFilePlaying.observe(
-            viewLifecycleOwner
-        ) { isPlaying ->
-            playStatus = isPlaying
-        }
-
-
         mediaFilesAdapter = MediaFilesAdapter(this)
-        mediaFilesViewModel.mediaItems.observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
 
-                    it.data?.let { mediaFiles ->
-                        mediaFilesAdapter.submitList(mediaFiles)
-                    }
-                }
-
-                Status.LOADING -> {
-
-                }
-
-                Status.ERROR -> {
-
-                }
-            }
-            mediaFilesAdapter.submitList(it.data)
-        }
 
 
         binding.apply {
@@ -101,6 +68,13 @@ class MediaFilesFragment :
                     )
                 )
             }
+            mediaFilesViewModel.state.mediaFilesList.observe(viewLifecycleOwner) {mediaFiles->
+                mediaFiles?.let{
+                    mediaFilesAdapter.submitList(it)
+                }
+            }
+
+
 
 
         }
@@ -111,6 +85,7 @@ class MediaFilesFragment :
     private fun subscribeToObservers() {
         mediaFilesViewModel.mediaFilesEvents.asLiveData().observe(viewLifecycleOwner) { event ->
             when (event) {
+
                 is MediaFilesEvents.NavigateBack -> {
                     setFragmentResult(
                         "subCategoryID", bundleOf(
@@ -121,55 +96,43 @@ class MediaFilesFragment :
                     findNavController().popBackStack()
                 }
                 is MediaFilesEvents.NavigateToSysTemMediaFiles -> {
-                    val action = MediaFilesFragmentDirections
-                        .actionAudioFilesFragmentToSystemMediaFilesFragment(
-                            subCategoryId = event.subCategoryId
+                    val action =
+                        MediaFilesFragmentDirections.actionAudioFilesFragmentToSystemMediaFilesFragment(
+                            event.subCategoryId
                         )
-                    findNavController().navigate(action)
+                    findNavController().navigate(
+                       action
+                    )
                 }
-                MediaFilesEvents.PauseMusic -> TODO()
-                is MediaFilesEvents.PlayMusic -> TODO()
+                is MediaFilesEvents.PlayPauseMusic -> {
+                   mediaFilesViewModel.onEvent(
+                       MediaFilesViewModelEvents.OnPlayPauseButtonClicked
+                   )
+                    startService()
+                }
+
             }
+        }
+    }
 
-
+    private fun startService() {
+        if (!isServiceRunning) {
+            val intent = Intent(requireContext(), PlayerService::class.java)
+                startForegroundService(requireContext() , intent)
+            isServiceRunning = true
         }
     }
 
     override fun onBtnPlayPauseClicked(mediaFile: MediaFile) {
+        startService()
         mediaFilesViewModel.onEvent(
-            MediaFilesViewModelEvents.OnPlayPauseButtonClicked(
-                mediaFile,
-                playStatus
+            MediaFilesViewModelEvents.OnSelectedAudioChange(
+                mediaFile
             )
         )
     }
 
-//    private fun bindService() {
-//        val bindingServiceIntent = Intent(requireContext(), MusicService::class.java)
-//
-//        val serviceConnection = object : ServiceConnection {
-//            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-//                // Service connected, you can interact with the service here
-//                val binder = service as MusicService.PalPlayerBinder
-//                CommandCenterFragment.musicService = binder.getService()
-//                // Use myService instance as needed
-//                //requireContext().startForegroundService(bindingServiceIntent)
-//            }
-//
-//            override fun onServiceDisconnected(name: ComponentName?) {
-//                // Service disconnected, clean up any references
-//            }
-//        }
-//        requireContext().bindService(
-//            bindingServiceIntent,
-//            serviceConnection,
-//            Context.BIND_AUTO_CREATE
-//        )
-//    }
 
-
-
-    //package:mine
 
 
 

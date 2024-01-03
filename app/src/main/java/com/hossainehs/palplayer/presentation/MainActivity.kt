@@ -14,7 +14,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hossainehs.palplayer.databinding.ActivityMainBinding
 import com.hossainehs.palplayer.domain.sharedPreferences.Preferences
-import com.hossainehs.palplayer.service.MusicService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -103,6 +102,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     private fun isStoragePermissionGranted(): Boolean {
         return if ((checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED)
@@ -153,6 +153,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
 
 

@@ -3,7 +3,7 @@ package com.hossainehs.palplayer.data.repository
 import android.content.ContentResolver
 import android.provider.MediaStore
 import com.hossainehs.palplayer.data.local.AppDao
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 import com.hossainehs.palplayer.domain.model.MediaFile
 import com.hossainehs.palplayer.domain.model.SubCategory
 import com.hossainehs.palplayer.domain.model.SystemMediaFile
@@ -27,12 +27,10 @@ class RepositoryImpl(
     }
 
     override fun getSubCategoriesWithMediaFilesByMainCategoryName(
-        mainCategoryId: Int,
-        mainCategoryName: String
+        mainCategoryId: Int
     ): Flow<List<SubCategoryWithMediaFile>> {
         return dao.getSubCategoriesWithMediaFiles(
             mainCategoryId,
-            mainCategoryName
         )
     }
 
@@ -118,7 +116,6 @@ class RepositoryImpl(
                 println(cursor.count)
                 while (cursor.moveToNext()) {
                     val audioID = cursor.getLong(idColumn)
-                    val path = audioID.toString()
                     val relativePath = cursor.getString(fRelativePath)
                     val displayName = cursor.getString(displayNameColumn)
                     val artist = cursor.getString(artistColumn)

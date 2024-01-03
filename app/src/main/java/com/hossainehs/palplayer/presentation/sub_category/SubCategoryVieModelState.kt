@@ -1,7 +1,7 @@
 package com.hossainehs.palplayer.presentation.sub_category
 
 import androidx.lifecycle.SavedStateHandle
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 
 class SubCategoryVieModelState(
     private val savedStateHandle: SavedStateHandle

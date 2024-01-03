@@ -1,11 +1,10 @@
 package com.hossainehs.palplayer.presentation.util
 
 import com.hossainehs.palplayer.domain.model.MediaFile
-import com.hossainehs.palplayer.domain.model.SubCategory
 
 sealed class MediaFilesEvents{
     data class NavigateBack(
-        val mainCategoryNumber: Int
+        val mainCategoryNumber: Int,
         ) : MediaFilesEvents()
 
     data class NavigateToSysTemMediaFiles(
@@ -13,11 +12,11 @@ sealed class MediaFilesEvents{
         ) : MediaFilesEvents()
 
 
-    data class PlayMusic(
+    data class PlayPauseMusic(
         val mediaFile: MediaFile
     ) : MediaFilesEvents()
 
-    object PauseMusic : MediaFilesEvents()
+
 
 
 }

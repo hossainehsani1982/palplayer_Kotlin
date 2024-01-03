@@ -1,11 +1,13 @@
 package com.hossainehs.palplayer.presentation.sub_category
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -14,8 +16,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hossainehs.palplayer.R
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.data.util.ConstValues.NOTIFICATION_ID
 import com.hossainehs.palplayer.databinding.FragmentMainCategoryBinding
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.media_item_service.MediaBrowserService
 import com.hossainehs.palplayer.presentation.util.SubCategoryPageEvents
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,7 +38,12 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
         subCategoryAdapter = SubCategoryAdapter(this)
 
         subscribeToObserves()
+       // startService()
 
+        /*
+        * update the subCategoryViewModel with the current fragment page number
+        * using the flow from the shared preferences
+        */
         viewLifecycleOwner.lifecycleScope.launch {
             subCategoryViewModel.pref.getCurrentFragmentPageNumber().collect {
                 subCategoryViewModel.onEvents(
@@ -46,6 +55,9 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
         }
 
         binding.apply {
+            /*
+            * setting up the recycler view for the sub categories
+            */
             rvSubCategories.apply {
                 adapter = subCategoryAdapter
                 addItemDecoration(
@@ -55,13 +67,12 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
                     )
                 )
                 layoutManager = LinearLayoutManager(requireContext())
-                subCategoryViewModel.subCategoryItems.observe(
-                    viewLifecycleOwner
-                ) {
-                    println("subCategoryItems: ${it.data?.size}")
-                    subCategoryAdapter.submitList(it.data)
-                }
+
             }
+
+            /*
+            * setting up the add new folder button to pop up an alert dialog
+             */
 
             btnAddNewFolder.setOnClickListener {
                 val dialogView = LayoutInflater.from(requireContext())
@@ -97,10 +108,11 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
 
             }
         }
+
         setFragmentResultListener("subCategoryID") { _, bundle ->
             val result = bundle.getInt("subCategoryID")
             subCategoryViewModel.onEvents(
-                SubCategoryViewModelEvents.OnSubCategoryChanged(
+                SubCategoryViewModelEvents.OnReturnToSubCategory(
                     result
                 )
             )
@@ -118,6 +130,10 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
                         )
                     findNavController().navigate(action)
                 }
+
+                is SubCategoryPageEvents.LoadSubCategories -> {
+                    subCategoryAdapter.submitList(event.subCategories)
+                }
             }
         }
     }
@@ -129,6 +145,13 @@ class SubCategoryFragment : Fragment(R.layout.fragment_main_category),
             )
         )
     }
+
+//    private fun startService() {
+//        ContextCompat.startForegroundService(
+//            requireContext(),
+//            Intent(requireContext(), MediaBrowserService::class.java)
+//        )
+//    }
 
 
 }

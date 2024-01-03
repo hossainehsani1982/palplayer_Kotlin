@@ -1,8 +1,7 @@
 package com.hossainehs.palplayer.domain.repository
 
-import android.content.ContentResolver
-import androidx.lifecycle.LiveData
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 import com.hossainehs.palplayer.domain.model.MediaFile
 import com.hossainehs.palplayer.domain.model.SubCategory
 import com.hossainehs.palplayer.domain.model.SystemMediaFile
@@ -16,11 +15,10 @@ interface Repository {
 
     fun getSubCategoriesWithMediaFilesByMainCategoryName(
         mainCategoryId: Int,
-        mainCategoryName: String
     ): Flow<List<SubCategoryWithMediaFile>>
 
 
-   suspend fun getSubCategoryWithMediaFilesBySubCategoryId(
+    suspend fun getSubCategoryWithMediaFilesBySubCategoryId(
         subCategoryId: Int
     ): SubCategoryWithMediaFile
 
@@ -35,7 +33,7 @@ interface Repository {
     ): Flow<List<SystemMediaFile>>
 
     suspend fun getMediaFileByUri(
-       uri : String
+        uri : String
     ): MediaFile
 
 

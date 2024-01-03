@@ -3,8 +3,6 @@ package com.hossainehs.palplayer.domain.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import io.realm.kotlin.ext.realmListOf
-import io.realm.kotlin.types.RealmList
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "subcategory_table")

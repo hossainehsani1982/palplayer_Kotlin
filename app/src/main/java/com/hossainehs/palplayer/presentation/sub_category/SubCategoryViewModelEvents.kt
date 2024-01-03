@@ -1,16 +1,22 @@
 package com.hossainehs.palplayer.presentation.sub_category
 
-import com.hossainehs.palplayer.domain.model.Relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 
-sealed class SubCategoryViewModelEvents{
+sealed class SubCategoryViewModelEvents {
 
     data class OnAddNewSubCategory(
-        val subCategoryName: String): SubCategoryViewModelEvents()
+        val subCategoryName: String
+    ) : SubCategoryViewModelEvents()
 
     data class OnSubCategoryChanged(
-        val mainCategoryNumber: Int): SubCategoryViewModelEvents()
+        val mainCategoryNumber: Int
+    ) : SubCategoryViewModelEvents()
 
     data class OnNavigateToMediaFiles(
         val subCategoryWithMediaFile: SubCategoryWithMediaFile
-        ) : SubCategoryViewModelEvents()
+    ) : SubCategoryViewModelEvents()
+
+    data class OnReturnToSubCategory(
+        val mainCategoryNumber: Int
+    ) : SubCategoryViewModelEvents()
 }

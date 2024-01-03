@@ -1,4 +1,4 @@
-package com.hossainehs.palplayer.domain.model.Relation
+package com.hossainehs.palplayer.domain.model.relation
 
 import android.os.Parcelable
 import androidx.room.Embedded
