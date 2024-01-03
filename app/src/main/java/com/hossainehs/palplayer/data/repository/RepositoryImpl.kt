@@ -37,7 +37,7 @@ class RepositoryImpl(
 
     override suspend fun getSubCategoryWithMediaFilesBySubCategoryId(
         subCategoryId: Int
-    ): SubCategoryWithMediaFile {
+    ): SubCategoryWithMediaFile? {
         return dao.getSubCategoryWithMediaFiles(
             subCategoryId
         )

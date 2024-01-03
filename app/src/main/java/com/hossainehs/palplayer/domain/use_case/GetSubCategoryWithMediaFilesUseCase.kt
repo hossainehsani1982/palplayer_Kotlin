@@ -8,7 +8,7 @@ class GetSubCategoryWithMediaFilesUseCase(
 ) {
     suspend operator fun invoke(
         mainCategoryId: Int
-    ): SubCategoryWithMediaFile {
+    ): SubCategoryWithMediaFile? {
          return  repository.getSubCategoryWithMediaFilesBySubCategoryId(mainCategoryId)
      }
 }

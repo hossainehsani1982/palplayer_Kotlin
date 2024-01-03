@@ -2,7 +2,6 @@ package com.hossainehs.palplayer.presentation.media_files
 
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat.startForegroundService
@@ -28,7 +27,7 @@ class MediaFilesFragment :
     MediaFilesAdapter.MediaFilesAdapterListener {
 
     private lateinit var binding: FragmentAudioFilesBinding
-    lateinit var mediaFilesViewModel: MediaFilesViewModel
+    private lateinit var mediaFilesViewModel: MediaFilesViewModel
     private lateinit var mediaFilesAdapter: MediaFilesAdapter
     private var isServiceRunning = false
 
@@ -68,18 +67,13 @@ class MediaFilesFragment :
                     )
                 )
             }
-            mediaFilesViewModel.state.mediaFilesList.observe(viewLifecycleOwner) {mediaFiles->
-                mediaFiles?.let{
+            mediaFilesViewModel.state.mediaFilesList.observe(viewLifecycleOwner) { mediaFiles ->
+                mediaFiles?.let {
                     mediaFilesAdapter.submitList(it)
                 }
             }
 
-
-
-
         }
-
-
     }
 
     private fun subscribeToObservers() {
@@ -95,19 +89,21 @@ class MediaFilesFragment :
                     )
                     findNavController().popBackStack()
                 }
+
                 is MediaFilesEvents.NavigateToSysTemMediaFiles -> {
                     val action =
                         MediaFilesFragmentDirections.actionAudioFilesFragmentToSystemMediaFilesFragment(
                             event.subCategoryId
                         )
                     findNavController().navigate(
-                       action
+                        action
                     )
                 }
+
                 is MediaFilesEvents.PlayPauseMusic -> {
-                   mediaFilesViewModel.onEvent(
-                       MediaFilesViewModelEvents.OnPlayPauseButtonClicked
-                   )
+                    mediaFilesViewModel.onEvent(
+                        MediaFilesViewModelEvents.OnPlayPauseButtonClicked
+                    )
                     startService()
                 }
 
@@ -118,23 +114,20 @@ class MediaFilesFragment :
     private fun startService() {
         if (!isServiceRunning) {
             val intent = Intent(requireContext(), PlayerService::class.java)
-                startForegroundService(requireContext() , intent)
+            startForegroundService(requireContext(), intent)
             isServiceRunning = true
         }
     }
 
     override fun onBtnPlayPauseClicked(mediaFile: MediaFile) {
         startService()
+
         mediaFilesViewModel.onEvent(
             MediaFilesViewModelEvents.OnSelectedAudioChange(
                 mediaFile
             )
         )
     }
-
-
-
-
 
 
 }

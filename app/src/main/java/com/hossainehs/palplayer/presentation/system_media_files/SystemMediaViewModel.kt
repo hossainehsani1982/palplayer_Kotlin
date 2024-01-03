@@ -82,12 +82,15 @@ class SystemMediaViewModel @Inject constructor(
 
     private fun getSubCategoryWithMediaFiles(subCategoryId: Int) {
         viewModelScope.launch {
-            state.updateCurrentSubCategory(
-                useCases.getSubCategoryWithMediaFilesUseCase(
-                    subCategoryId
-                ).subCategory
-            )
-            getSystemMediaFiles()
+            useCases.getSubCategoryWithMediaFilesUseCase(
+                subCategoryId
+            )?.let {
+                state.updateCurrentSubCategory(
+                    it.subCategory
+                )
+                getSystemMediaFiles()
+            }
+
         }
     }
 

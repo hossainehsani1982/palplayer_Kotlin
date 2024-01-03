@@ -82,6 +82,14 @@ class AudioServicePlaybackHandler @Inject constructor(
 
             ExoPlayer.STATE_READY -> _audioState.value =
                 AppAudioState.Ready(exoPlayer.duration)
+
+            Player.STATE_ENDED -> {
+                TODO()
+            }
+
+            Player.STATE_IDLE -> {
+                TODO()
+            }
         }
     }
 

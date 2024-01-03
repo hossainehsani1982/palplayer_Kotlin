@@ -35,7 +35,7 @@ interface AppDao {
     )
     suspend fun getSubCategoryWithMediaFiles(
         subCategoryId: Int
-    ): SubCategoryWithMediaFile
+    ): SubCategoryWithMediaFile?
 
     @Transaction
     @Query(

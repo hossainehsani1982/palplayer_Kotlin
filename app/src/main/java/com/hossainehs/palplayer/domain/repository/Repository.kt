@@ -20,7 +20,7 @@ interface Repository {
 
     suspend fun getSubCategoryWithMediaFilesBySubCategoryId(
         subCategoryId: Int
-    ): SubCategoryWithMediaFile
+    ): SubCategoryWithMediaFile?
 
     suspend fun insertNewMediaFile(mediaFile: MediaFile)
 

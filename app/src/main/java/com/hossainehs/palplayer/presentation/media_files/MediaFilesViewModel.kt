@@ -184,12 +184,17 @@ class MediaFilesViewModel @Inject constructor(
     }
 
     private suspend fun loadMediaFiles() {
-        state.updateMediaFilesList(
-            useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId).mediaFiles
-        )
-        state.mediaFilesList.value?.let {
-            setMediaItems(it)
+        useCases.getSubCategoryWithMediaFilesUseCase(subCategoryId)?.let {subCatWithMediaFiles ->
+            state.updateMediaFilesList(
+                subCatWithMediaFiles.mediaFiles
+            )
+            state.mediaFilesList.value?.let {listMediaFiles ->
+                setMediaItems(listMediaFiles)
+            }
         }
+
+
+
     }
 
     private fun setMediaItems(playList: List<MediaFile>) {
