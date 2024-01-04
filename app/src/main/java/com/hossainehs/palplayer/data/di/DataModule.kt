@@ -18,6 +18,7 @@ import com.hossainehs.palplayer.data.sharedPreferences.PreferencesImpl
 import com.hossainehs.palplayer.domain.repository.Repository
 import com.hossainehs.palplayer.domain.use_case.CreateNewCategoryUseCase
 import com.hossainehs.palplayer.domain.use_case.GetMediaFileByUri
+import com.hossainehs.palplayer.domain.use_case.GetMediaFilesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetSubCategoriesWithMediaFilesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetSubCategoryWithMediaFilesUseCase
 import com.hossainehs.palplayer.domain.use_case.GetSystemMediaFilesUseCase
@@ -154,6 +155,7 @@ object DataModule {
             getSubCategoryWithMediaFilesUseCase = GetSubCategoryWithMediaFilesUseCase(repository),
             getSystemMediaFilesUseCase = GetSystemMediaFilesUseCase(repository),
             insertMediaFileUseCase = InsertMediaFileUseCase(repository),
+            getMediaFilesUseCase = GetMediaFilesUseCase(repository),
             getMediaFileByUri = GetMediaFileByUri(repository),
         )
     }

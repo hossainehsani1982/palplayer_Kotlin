@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommandCenterViewModel @Inject constructor(
-    private val audioServicePlaybackHandler: AudioServicePlaybackHandler,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -34,7 +33,6 @@ class CommandCenterViewModel @Inject constructor(
 
     fun onEvent(event: CommandCenterViewModelEvents) {
         when (event) {
-
             is CommandCenterViewModelEvents.OnProgressbarChanged -> {
                 viewModelScope.launch {
                     _commandCenterEvents.send(

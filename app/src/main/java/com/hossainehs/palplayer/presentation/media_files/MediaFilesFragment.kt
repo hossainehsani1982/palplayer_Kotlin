@@ -30,6 +30,7 @@ class MediaFilesFragment :
 
     private lateinit var binding: FragmentAudioFilesBinding
     private val mediaFilesViewModel: MediaFilesViewModel by viewModels()
+    //private lateinit var mediaFilesViewModel: MediaFilesViewModel
     private lateinit var mediaFilesAdapter: MediaFilesAdapter
     private var isServiceRunning = false
 
@@ -44,6 +45,7 @@ class MediaFilesFragment :
 
         subscribeToObservers()
         mediaFilesAdapter = MediaFilesAdapter(this)
+
 
 
 

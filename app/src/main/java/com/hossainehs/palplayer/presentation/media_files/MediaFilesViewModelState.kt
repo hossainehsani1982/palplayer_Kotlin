@@ -39,7 +39,7 @@ class MediaFilesViewModelState(
     var currentPosition = savedStateHandle.getLiveData<Long>("currentPosition")
         private set(value) {
             field = value
-            savedStateHandle["currentPositon"] = value
+            savedStateHandle["currentPosition"] = value
         }
     fun updateCurrentPosition(currentPosition: Long) {
         this.currentPosition.value = currentPosition
@@ -89,24 +89,22 @@ class MediaFilesViewModelState(
     fun updateIsPlaying(isPlaying: Boolean) {
         this.isPlaying.value = isPlaying
     }
-    private val dummyFile = MediaFile(
-        audioFileId = 0,
-        path = "",
-        displayName = "dummyFile",
-        artist = "",
-        duration = 0,
-    )
-    var currentPlayingFile = savedStateHandle.getLiveData(
-        "currentPlayingFile",
-        dummyFile)
+//    private val dummyFile = MediaFile(
+//        audioFileId = 0,
+//        path = "",
+//        displayName = "dummyFile",
+//        artist = "",
+//        duration = 0,
+//    )
+
+    var playingFileName = savedStateHandle.getLiveData<String>("playingFileName")
         private set(value) {
             field = value
-            savedStateHandle["currentPlayingFile"] = value
+            savedStateHandle["playingFileName"] = value
         }
-    fun updateCurrentPlayingFile(currentPlayingFile: MediaFile) {
-        this.currentPlayingFile.value = currentPlayingFile
+    fun updatePlayingFileName(mediaFileName: String) {
+        this.playingFileName.value = mediaFileName
     }
-
 
 
 }

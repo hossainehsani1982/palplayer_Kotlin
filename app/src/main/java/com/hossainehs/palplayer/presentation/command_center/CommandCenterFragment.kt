@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -27,12 +28,12 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
     private val commandCenterViewModel: CommandCenterViewModel by viewModels()
     private val mediaFilesViewModel: MediaFilesViewModel by viewModels()
+    //private lateinit var mediaFilesViewModel: MediaFilesViewModel
     private lateinit var binding: FragmentComandCenterBinding
     private lateinit var dialog: BottomSheetDialog
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private var playingMediaFile: MediaFile? = null
     private var isPlaying: Boolean = false
-
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -61,17 +62,24 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
         binding.apply {
 
+            mediaFilesViewModel.state.playingFileName.observe(viewLifecycleOwner) {
+                println("displayName1: ${it}")
+                tvMediaName.text = it
+            }
+
             mediaFilesViewModel.state.durationString.observe(viewLifecycleOwner) {
                 tvDuration.text = it
             }
             mediaFilesViewModel.state.progressString.observe(viewLifecycleOwner) {
+
                 tvCurrentProgress.text = it
             }
 
-            mediaFilesViewModel.state.currentPlayingFile.observe(viewLifecycleOwner) {
-                playingMediaFile = it
-                tvMediaName.text = it.displayName
+            mediaFilesViewModel.state.currentPosition.observe(viewLifecycleOwner) {
+
             }
+
+
 
             mediaFilesViewModel.state.isPlaying.observe(viewLifecycleOwner) {
                 if (it) {
@@ -97,17 +105,16 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
                 }
 
                 override fun onStopTrackingTouch(p0: SeekBar?) {
-                    if (playingMediaFile != null) {
-                        mediaFilesViewModel.onEvent(
-                            MediaFilesViewModelEvents.OnSeekTo(
-                                pb_position.toLong()
-                            )
+                    // if (playingMediaFile != null) {
+                    mediaFilesViewModel.onEvent(
+                        MediaFilesViewModelEvents.OnSeekTo(
+                            pb_position.toLong()
                         )
-                    }
+                    )
+                    // }
                 }
 
             })
-
 
             ltBtnPreviousSong.setOnClickListener {
                 mediaFilesViewModel.onEvent(
@@ -123,17 +130,15 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
             }
 
             ltBtnPlay.setOnClickListener {
-                playingMediaFile?.let {
-                    if (it.displayName != "dummyFile") {
-                        commandCenterViewModel.onEvent(
-                            CommandCenterViewModelEvents.OnPlayPauseButtonClicked(
-                                currentPosition = mediaFilesViewModel.state.currentPosition.value!!,
-                                isPlaying = isPlaying,
-                                mediaFile = playingMediaFile!!
-                            )
-                        )
-                    }
-                }
+
+                commandCenterViewModel.onEvent(
+                    CommandCenterViewModelEvents.OnPlayPauseButtonClicked(
+                        currentPosition = mediaFilesViewModel.state.currentPosition.value!!,
+                        isPlaying = isPlaying,
+                        mediaFile = playingMediaFile!!
+                    )
+                )
+
             }
 
             ltBtn10SecForward.setOnClickListener {

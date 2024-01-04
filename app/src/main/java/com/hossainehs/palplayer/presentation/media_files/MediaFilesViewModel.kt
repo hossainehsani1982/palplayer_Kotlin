@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.hossainehs.palplayer.domain.model.MediaFile
+import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
 import com.hossainehs.palplayer.domain.use_case.UseCases
 import com.hossainehs.palplayer.player_service.AppAudioState
 import com.hossainehs.palplayer.player_service.AppPlayerEvents
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MediaFilesViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val useCases: UseCases,
     private val audioServicePlaybackHandler: AudioServicePlaybackHandler
 ) : ViewModel() {
@@ -70,10 +71,12 @@ class MediaFilesViewModel @Inject constructor(
                     }
 
                     is AppAudioState.CurrentlyPlaying -> {
-                        state.mediaFilesList.value?.let {
-                            state.updateCurrentPlayingFile(it[appAudioState.mediaItemIndex])
-                        }
 
+                        state.mediaFilesList.value?.let {
+
+                            state.updatePlayingFileName(it[appAudioState.mediaItemIndex].displayName)
+                            emitData(state.playingFileName.value!!)
+                        }
                     }
 
                     is AppAudioState.Ready -> {
@@ -167,7 +170,7 @@ class MediaFilesViewModel @Inject constructor(
             }
 
             is MediaFilesViewModelEvents.OnSeekTo -> {
-                println("seekTo: ${events.position}")
+
                 viewModelScope.launch {
                     audioServicePlaybackHandler.onPlayerEvents(
                         AppPlayerEvents.SeekTo,
@@ -196,15 +199,19 @@ class MediaFilesViewModel @Inject constructor(
     }
 
     private suspend fun loadMediaFiles() {
+
         useCases.getSubCategoryWithMediaFilesUseCase(subCatId)?.let { subCatWithMediaFiles ->
+
             state.updateMediaFilesList(
                 subCatWithMediaFiles.mediaFiles
             )
+            if (subCatWithMediaFiles.mediaFiles.isNotEmpty())
+                emitData(subCatWithMediaFiles.mediaFiles[0].displayName)
+
             state.mediaFilesList.value?.let { listMediaFiles ->
                 setMediaItems(listMediaFiles)
             }
         }
-
 
     }
 
@@ -228,11 +235,17 @@ class MediaFilesViewModel @Inject constructor(
         }
     }
 
+    private fun emitData(mediaFile: String) {
+        println("data emitted")
+        state.updatePlayingFileName(mediaFile)
+
+    }
+
     private fun calculateProgress(currentPosition: Long) {
         state.updateCurrentPosition(currentPosition)
         if (state.duration > 0) {
             state.updateProgress((currentPosition.toFloat() / state.duration.toFloat()) * 100f)
-            println(state.progress)
+
         } else {
             // Handle the case where the duration is not available yet
             state.updateProgress(0f)
@@ -241,7 +254,7 @@ class MediaFilesViewModel @Inject constructor(
     }
 
     private fun formatDuration(duration: Long): String {
-        println("durationFormatDuration: $duration")
+
 
         val hours = TimeUnit.MILLISECONDS.toHours(duration)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(duration) -

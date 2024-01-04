@@ -6,5 +6,6 @@ data class UseCases(
     val getSubCategoryWithMediaFilesUseCase: GetSubCategoryWithMediaFilesUseCase,
     val getSystemMediaFilesUseCase: GetSystemMediaFilesUseCase,
     val insertMediaFileUseCase: InsertMediaFileUseCase,
+    val getMediaFilesUseCase: GetMediaFilesUseCase,
     val getMediaFileByUri: GetMediaFileByUri,
 )
