@@ -35,6 +35,7 @@ class PreferencesImpl (
     }
 
     override suspend fun setCurrentlyPlayingFileName(fileName: String) {
+        println("setCurrentlyPlayingFileName: $fileName")
         preferencesDataStore.updateCurrentlyPlayingFileName(fileName)
     }
 
@@ -58,7 +59,7 @@ class PreferencesImpl (
 
     override fun getCurrentlyPlayingFileCategory(): Flow<String> {
         return preferencesDataStore.preferencesFlow.map {
-            it.currentlyPlayingFile }
+            it.currentlyPlayingFileCategory }
     }
 
     override suspend fun setNowPlayingAtt(nowPlayingAtt: Long) {

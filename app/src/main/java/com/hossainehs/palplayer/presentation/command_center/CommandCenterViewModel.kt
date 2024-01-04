@@ -3,6 +3,7 @@ package com.hossainehs.palplayer.presentation.command_center
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hossainehs.palplayer.domain.sharedPreferences.Preferences
 import com.hossainehs.palplayer.player_service.AudioServicePlaybackHandler
 import com.hossainehs.palplayer.presentation.media_files.UIState
 import com.hossainehs.palplayer.presentation.util.CommandCenterEvents
@@ -18,12 +19,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommandCenterViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val preferences: Preferences
 ) : ViewModel() {
 
     val state = CommandCenterState(
         savedStateHandle = savedStateHandle
     )
+
+    init {
+        subscribeToPreferences()
+    }
 
     private val _commandCenterEvents = Channel<CommandCenterEvents>()
     val commandCenterEvents = _commandCenterEvents.receiveAsFlow()
@@ -86,6 +92,15 @@ class CommandCenterViewModel @Inject constructor(
                 }
             }
 
+        }
+    }
+
+    private fun subscribeToPreferences(){
+        viewModelScope.launch {
+            preferences.getCurrentlyPlayingFileName().collect {
+                println("CommandCenterViewModel: $it")
+                state.updateCurrentlyPlayingName(it)
+            }
         }
     }
 

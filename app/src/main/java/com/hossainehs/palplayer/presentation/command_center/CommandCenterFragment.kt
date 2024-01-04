@@ -28,6 +28,7 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
     private val commandCenterViewModel: CommandCenterViewModel by viewModels()
     private val mediaFilesViewModel: MediaFilesViewModel by viewModels()
+
     //private lateinit var mediaFilesViewModel: MediaFilesViewModel
     private lateinit var binding: FragmentComandCenterBinding
     private lateinit var dialog: BottomSheetDialog
@@ -62,8 +63,8 @@ class CommandCenterFragment : BottomSheetDialogFragment(R.layout.fragment_comand
 
         binding.apply {
 
-            mediaFilesViewModel.state.playingFileName.observe(viewLifecycleOwner) {
-                println("displayName1: ${it}")
+
+           commandCenterViewModel.state.currentlyPlayingName.observe(viewLifecycleOwner) {
                 tvMediaName.text = it
             }
 

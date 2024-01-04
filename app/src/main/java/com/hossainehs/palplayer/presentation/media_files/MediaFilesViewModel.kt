@@ -8,6 +8,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.hossainehs.palplayer.domain.model.MediaFile
 import com.hossainehs.palplayer.domain.model.relation.SubCategoryWithMediaFile
+import com.hossainehs.palplayer.domain.sharedPreferences.Preferences
 import com.hossainehs.palplayer.domain.use_case.UseCases
 import com.hossainehs.palplayer.player_service.AppAudioState
 import com.hossainehs.palplayer.player_service.AppPlayerEvents
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class MediaFilesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val useCases: UseCases,
-    private val audioServicePlaybackHandler: AudioServicePlaybackHandler
+    private val audioServicePlaybackHandler: AudioServicePlaybackHandler,
+    private val preferences: Preferences
 ) : ViewModel() {
 
     private val subCatId = savedStateHandle.get<Int>("subCatId") ?: 0
@@ -41,6 +43,8 @@ class MediaFilesViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Initial)
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
+
+
 
     init {
         viewModelScope.launch {
@@ -73,9 +77,7 @@ class MediaFilesViewModel @Inject constructor(
                     is AppAudioState.CurrentlyPlaying -> {
 
                         state.mediaFilesList.value?.let {
-
-                            state.updatePlayingFileName(it[appAudioState.mediaItemIndex].displayName)
-                            emitData(state.playingFileName.value!!)
+                            emitData(it[appAudioState.mediaItemIndex].displayName)
                         }
                     }
 
@@ -205,8 +207,6 @@ class MediaFilesViewModel @Inject constructor(
             state.updateMediaFilesList(
                 subCatWithMediaFiles.mediaFiles
             )
-            if (subCatWithMediaFiles.mediaFiles.isNotEmpty())
-                emitData(subCatWithMediaFiles.mediaFiles[0].displayName)
 
             state.mediaFilesList.value?.let { listMediaFiles ->
                 setMediaItems(listMediaFiles)
@@ -235,9 +235,14 @@ class MediaFilesViewModel @Inject constructor(
         }
     }
 
-    private fun emitData(mediaFile: String) {
-        println("data emitted")
-        state.updatePlayingFileName(mediaFile)
+    private fun emitData(mediaFileName: String) {
+       viewModelScope.launch {
+           println("emitData: $mediaFileName")
+           preferences.setCurrentlyPlayingFileName(
+               mediaFileName
+           )
+       }
+        state.updatePlayingFileName(mediaFileName)
 
     }
 
